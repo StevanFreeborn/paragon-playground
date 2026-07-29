@@ -23,21 +23,21 @@ This uses [mkcert](https://github.com/FiloSottile/mkcert) (installed automatical
 
 ### 2. Start infrastructure
 
-```bash
+```powershell
 cd src\ParagonPlayground
 docker compose -f docker-compose.dev.yml up -d
 ```
 
 ### 3. Seed data (via CLI)
 
-```bash
+```powershell
 cd src\ParagonPlayground\backend
 dotnet run --project src\ParagonPlayground.Cli -- provision seed
 ```
 
 Or create your own org + user:
 
-```bash
+```powershell
 dotnet run --project src\ParagonPlayground.Cli -- provision org --name "Test Corp" --slug testcorp
 dotnet run --project src\ParagonPlayground.Cli -- provision user --email admin@testcorp.com --password s3cret --name "Admin" --org-slug testcorp
 ```
@@ -51,7 +51,7 @@ Navigate to **https://acme.paragonplayground.localhost** and sign in with:
 
 ## CLI Reference
 
-```bash
+```powershell
 # Run from the backend directory
 dotnet run --project src\ParagonPlayground.Cli -- provision org --name "Name" --slug name
 dotnet run --project src\ParagonPlayground.Cli -- provision user --email e@x.com --password p --name "User" --org-slug name

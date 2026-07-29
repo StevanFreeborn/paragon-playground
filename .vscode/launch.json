@@ -1,0 +1,55 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach to Backend",
+      "type": "coreclr",
+      "request": "attach",
+      "processId": "${command:pickRemoteProcess}",
+      "pipeTransport": {
+        "pipeProgram": "docker",
+        "pipeArgs": ["exec", "-i", "paragonplayground-backend"],
+        "debuggerPath": "/vsdbg/vsdbg",
+        "pipeCwd": "${workspaceFolder}",
+        "quoteArgs": false
+      },
+      "preLaunchTask": "docker-compose up (backend only)",
+      "sourceFileMap": {
+        "/src/src/ParagonPlayground.Api": "${workspaceFolder}/src/ParagonPlayground/backend/src/ParagonPlayground.Api",
+        "/src/src/ParagonPlayground.Domain": "${workspaceFolder}/src/ParagonPlayground/backend/src/ParagonPlayground.Domain",
+        "/src/src/ParagonPlayground.Infrastructure": "${workspaceFolder}/src/ParagonPlayground/backend/src/ParagonPlayground.Infrastructure"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "logging": {
+        "moduleLoad": false
+      }
+    },
+    {
+      "name": "Attach to Frontend",
+      "type": "chrome",
+      "request": "launch",
+      "url": "${input:frontendUrl}",
+      "webRoot": "${workspaceFolder}/src/ParagonPlayground/frontend/src",
+      "sourceMapPathOverrides": {
+        "/app/src/*": "${webRoot}/*",
+        "webpack:///src/*": "${webRoot}/*"
+      }
+    },
+    {
+      "name": "Attach to All",
+      "type": "compound",
+      "preLaunchTask": "docker-compose up",
+      "configurations": ["Attach to Backend", "Attach to Frontend"]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "frontendUrl",
+      "type": "promptString",
+      "description": "Full URL (e.g. https://myorg.paragonplayground.localhost)",
+      "default": "https://myorg.paragonplayground.localhost"
+    }
+  ]
+}

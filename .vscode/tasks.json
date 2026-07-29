@@ -1,0 +1,93 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "docker-compose up",
+      "type": "shell",
+      "command": "docker compose -f docker-compose.dev.yml up -d --build",
+      "options": {
+        "cwd": "${workspaceFolder}/src/ParagonPlayground"
+      },
+      "problemMatcher": [],
+      "group": "none",
+      "detail": "Build and start all services (Vite dev server runs in Docker on port 3000)"
+    },
+    {
+      "label": "docker-compose up (backend only)",
+      "type": "shell",
+      "command": "docker compose -f docker-compose.dev.yml up -d --build mongodb backend nginx",
+      "options": {
+        "cwd": "${workspaceFolder}/src/ParagonPlayground"
+      },
+      "problemMatcher": [],
+      "group": "none",
+      "detail": "Backend only (no frontend container — port 3000 free for local Vite dev)"
+    },
+    {
+      "label": "docker-compose down",
+      "type": "shell",
+      "command": "docker compose -f docker-compose.dev.yml down",
+      "options": {
+        "cwd": "${workspaceFolder}/src/ParagonPlayground"
+      },
+      "problemMatcher": [],
+      "group": "none",
+      "detail": "Stop and remove all services"
+    },
+    {
+      "label": "docker-compose restart",
+      "type": "shell",
+      "command": "docker compose -f docker-compose.dev.yml restart",
+      "options": {
+        "cwd": "${workspaceFolder}/src/ParagonPlayground"
+      },
+      "problemMatcher": [],
+      "group": "none",
+      "detail": "Restart all services"
+    },
+    {
+      "label": "build backend",
+      "type": "shell",
+      "command": "dotnet build backend/ParagonPlayground.slnx --configuration Debug",
+      "options": {
+        "cwd": "${workspaceFolder}/src/ParagonPlayground"
+      },
+      "problemMatcher": "$msCompile",
+      "group": "build",
+      "detail": "Build the .NET solution"
+    },
+    {
+      "label": "test backend",
+      "type": "shell",
+      "command": "dotnet test backend/ParagonPlayground.slnx --configuration Debug --no-build --verbosity normal",
+      "options": {
+        "cwd": "${workspaceFolder}/src/ParagonPlayground"
+      },
+      "problemMatcher": "$msCompile",
+      "group": "test",
+      "detail": "Run .NET tests"
+    },
+    {
+      "label": "install dependencies",
+      "type": "shell",
+      "command": "scripts/install.ps1",
+      "options": {
+        "cwd": "${workspaceFolder}/src/ParagonPlayground"
+      },
+      "problemMatcher": [],
+      "group": "none",
+      "detail": "Restore .NET packages and install npm dependencies"
+    },
+    {
+      "label": "clean backend",
+      "type": "shell",
+      "command": "dotnet clean backend/ParagonPlayground.slnx && Get-ChildItem -Path backend -Include bin,obj -Recurse -Directory | Remove-Item -Recurse -Force",
+      "options": {
+        "cwd": "${workspaceFolder}/src/ParagonPlayground"
+      },
+      "problemMatcher": [],
+      "group": "none",
+      "detail": "Clean .NET build artifacts"
+    }
+  ]
+}

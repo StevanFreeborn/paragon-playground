@@ -1,0 +1,8 @@
+**/.git/
+**/bin/
+**/obj/
+**/node_modules/
+**/appsettings.Development.json
+**/.dockerignore
+Dockerfile
+README.md

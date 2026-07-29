@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ParagonPlayground.Api/ParagonPlayground.Api.csproj" />
+    <Project Path="src/ParagonPlayground.Cli/ParagonPlayground.Cli.csproj" />
+    <Project Path="src/ParagonPlayground.Domain/ParagonPlayground.Domain.csproj" />
+    <Project Path="src/ParagonPlayground.Infrastructure/ParagonPlayground.Infrastructure.csproj" />
+  </Folder>
+</Solution>

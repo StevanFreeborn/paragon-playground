@@ -11,7 +11,7 @@
     type IntegrationConfig,
     type CredentialResponse,
   } from '../services/integration';
-import { formatLocaleDateWithTime } from '../utils/utils';
+  import { formatLocaleDateWithTime } from '../utils/utils';
 
   const config = ref<IntegrationConfig | null>(null);
   const credentials = ref<CredentialResponse[]>([]);
@@ -141,7 +141,6 @@ import { formatLocaleDateWithTime } from '../utils/utils';
       disconnecting.value = false;
     }
   }
-
 </script>
 
 <template>
@@ -177,9 +176,10 @@ import { formatLocaleDateWithTime } from '../utils/utils';
         <template v-if="integrationConfigured">
           <div class="integration-row">
             <div class="integration-info">
-              <span class="integration-icon"><AppIcon
-                name="folder"
-                :size="20"
+              <span class="integration-icon"
+                ><AppIcon
+                  name="folder"
+                  :size="20"
               /></span>
               <div>
                 <h3 class="integration-name">SharePoint</h3>
@@ -217,9 +217,7 @@ import { formatLocaleDateWithTime } from '../utils/utils';
                 class="btn btn-primary"
                 :disabled="connecting"
                 @click="
-                  connectAccount(
-                    connectionMode === 'byo' ? ['user-configured-oauth'] : undefined,
-                  )
+                  connectAccount(connectionMode === 'byo' ? ['user-configured-oauth'] : undefined)
                 "
               >
                 {{ connecting ? 'Connecting...' : 'Connect Account' }}
@@ -238,7 +236,9 @@ import { formatLocaleDateWithTime } from '../utils/utils';
               class="credential-row"
             >
               <span class="cred-type">{{ cred.integrationType }}</span>
-              <span class="cred-date">Connected {{ formatLocaleDateWithTime(cred.connectedAt) }}</span>
+              <span class="cred-date"
+                >Connected {{ formatLocaleDateWithTime(cred.connectedAt) }}</span
+              >
               <span class="cred-id">{{ cred.credentialId.slice(0, 12) }}...</span>
             </div>
           </div>

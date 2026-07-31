@@ -15,4 +15,3 @@ export function formatLocaleDateWithTime(iso: string): string {
     minute: '2-digit',
   });
 }
-

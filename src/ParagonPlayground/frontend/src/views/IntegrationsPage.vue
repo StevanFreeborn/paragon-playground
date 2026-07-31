@@ -12,7 +12,7 @@
     type IntegrationConfigRequest,
     type CredentialResponse,
   } from '../services/integration';
-import { formatLocaleDateWithTime } from '../utils/utils';
+  import { formatLocaleDateWithTime } from '../utils/utils';
 
   const config = ref<IntegrationConfig | null>(null);
   const credentials = ref<CredentialResponse[]>([]);

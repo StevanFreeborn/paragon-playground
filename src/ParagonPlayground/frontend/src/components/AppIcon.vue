@@ -1,13 +1,5 @@
 <script setup lang="ts">
-  type IconName =
-    | 'folder'
-    | 'file'
-    | 'upload'
-    | 'download'
-    | 'external'
-    | 'trash'
-    | 'x'
-    | 'plus';
+  type IconName = 'folder' | 'file' | 'upload' | 'download' | 'external' | 'trash' | 'x' | 'plus';
 
   const props = withDefaults(defineProps<{ name: IconName; size?: number }>(), {
     size: 16,
@@ -20,7 +12,11 @@
     file: ['M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z', 'M14 2v4a2 2 0 0 0 2 2h4'],
     upload: ['M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4', 'M17 8l-5-5-5 5', 'M12 3v12'],
     download: ['M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4', 'M7 10l5 5 5-5', 'M12 15V3'],
-    external: ['M15 3h6v6', 'M10 14 21 3', 'M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6'],
+    external: [
+      'M15 3h6v6',
+      'M10 14 21 3',
+      'M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6',
+    ],
     trash: [
       'M3 6h18',
       'M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6',

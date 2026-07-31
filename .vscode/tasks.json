@@ -46,6 +46,28 @@
       "detail": "Restart all services"
     },
     {
+      "label": "docker-compose up (debug)",
+      "type": "shell",
+      "command": "docker compose -f docker-compose.debug.yml up -d --build",
+      "options": {
+        "cwd": "${workspaceFolder}/src/ParagonPlayground"
+      },
+      "problemMatcher": [],
+      "group": "none",
+      "detail": "Build and start all services using the debug stage (compiled binary, debugger-ready)"
+    },
+    {
+      "label": "docker-compose up (debug backend only)",
+      "type": "shell",
+      "command": "docker compose -f docker-compose.debug.yml up -d --build mongodb backend nginx",
+      "options": {
+        "cwd": "${workspaceFolder}/src/ParagonPlayground"
+      },
+      "problemMatcher": [],
+      "group": "none",
+      "detail": "Backend only in debug mode (no frontend container)"
+    },
+    {
       "label": "build backend",
       "type": "shell",
       "command": "dotnet build backend/ParagonPlayground.slnx --configuration Debug",

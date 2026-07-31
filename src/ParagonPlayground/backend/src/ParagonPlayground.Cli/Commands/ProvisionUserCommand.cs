@@ -14,7 +14,8 @@ namespace ParagonPlayground.Cli.Commands;
 internal class ProvisionUserCommand(
   OrganizationRepository orgRepo,
   UserRepository userRepo,
-  PasswordService passwordService) : AsyncCommand<ProvisionUserCommand.Settings>
+  PasswordService passwordService
+) : AsyncCommand<ProvisionUserCommand.Settings>
 {
   internal class Settings : CommandSettings
   {
@@ -33,6 +34,10 @@ internal class ProvisionUserCommand(
     [Description("Organization slug")]
     [CommandOption("-o|--org-slug")]
     public required string OrgSlug { get; set; }
+
+    [Description("User role (admin or member)")]
+    [CommandOption("-r|--role")]
+    public string Role { get; set; } = "member";
   }
 
   protected override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
@@ -60,6 +65,7 @@ internal class ProvisionUserCommand(
       DisplayName = settings.Name,
       PasswordHash = passwordService.Hash(settings.Password),
       OrganizationId = org.Id,
+      Role = settings.Role,
       CreatedAt = DateTime.UtcNow,
     };
 

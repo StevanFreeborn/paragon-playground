@@ -16,8 +16,8 @@ internal static class AuthEndpoints
   internal static RouteGroupBuilder MapAuthEndpoints(this RouteGroupBuilder group)
   {
     _ = group.MapPost("/login", LoginAsync);
-    _ = group.MapPost("/logout", LogoutAsync);
-    _ = group.MapGet("/me", Me);
+    _ = group.MapPost("/logout", LogoutAsync).RequireAuthorization();
+    _ = group.MapGet("/me", Me).RequireAuthorization();
     return group;
   }
 
@@ -38,7 +38,7 @@ internal static class AuthEndpoints
 
     if (user is null || passwordService.Verify(request.Password, user.PasswordHash) is false)
     {
-      return Results.Json(new { error = "Invalid email or password" }, statusCode: StatusCodes.Status401Unauthorized);
+      return Results.Problem(detail: "Invalid email or password", statusCode: StatusCodes.Status401Unauthorized);
     }
 
     var org = await orgRepo.GetByIdAsync(user.OrganizationId, ct);
@@ -65,6 +65,7 @@ internal static class AuthEndpoints
       Id = user.Id,
       Email = user.Email,
       DisplayName = user.DisplayName,
+      Role = user.Role,
       OrganizationId = org?.Id ?? string.Empty,
       OrganizationName = org?.Name ?? string.Empty,
       OrganizationSlug = org?.Slug ?? string.Empty,
@@ -88,17 +89,12 @@ internal static class AuthEndpoints
     cookieService.ClearSessionCookie(context);
     cookieService.ClearXsrfCookie(context);
 
-    return Results.Ok(new { message = "Logged out" });
+    return Results.NoContent();
   }
 
   private static IResult Me(HttpContext context)
   {
     var user = context.GetUser();
-
-    if (user is null)
-    {
-      return Results.Json(new { error = "Not authenticated" }, statusCode: StatusCodes.Status401Unauthorized);
-    }
 
     var org = context.GetOrganization();
 
@@ -107,6 +103,7 @@ internal static class AuthEndpoints
       Id = user.Id,
       Email = user.Email,
       DisplayName = user.DisplayName,
+      Role = user.Role,
       OrganizationId = org?.Id ?? string.Empty,
       OrganizationName = org?.Name ?? string.Empty,
       OrganizationSlug = org?.Slug ?? string.Empty,

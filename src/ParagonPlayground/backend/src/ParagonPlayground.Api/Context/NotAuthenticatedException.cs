@@ -1,0 +1,16 @@
+namespace ParagonPlayground.Api.Context;
+
+internal sealed class NotAuthenticatedException : Exception
+{
+  public NotAuthenticatedException()
+  {
+  }
+
+  public NotAuthenticatedException(string message) : base(message)
+  {
+  }
+
+  public NotAuthenticatedException(string message, Exception innerException) : base(message, innerException)
+  {
+  }
+}

@@ -22,6 +22,18 @@ public sealed class MongoDbContext : IDisposable
   public IMongoCollection<Session> Sessions =>
       _database.GetCollection<Session>("Sessions");
 
+  /// <summary>Storage items collection.</summary>
+  public IMongoCollection<StorageItem> StorageItems =>
+      _database.GetCollection<StorageItem>("StorageItems");
+
+  /// <summary>User credentials collection.</summary>
+  public IMongoCollection<UserCredential> UserCredentials =>
+      _database.GetCollection<UserCredential>("UserCredentials");
+
+  /// <summary>Organization integrations collection.</summary>
+  public IMongoCollection<OrganizationIntegration> OrganizationIntegrations =>
+      _database.GetCollection<OrganizationIntegration>("OrganizationIntegrations");
+
   /// <summary>Initializes a new MongoDbContext and connects to the specified database.</summary>
   public MongoDbContext(string connectionString, string databaseName)
   {

@@ -1,108 +1,93 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { me, logout, type UserResponse } from '../services/auth';
+  import { ref, onMounted } from 'vue';
+  import { me, type UserResponse } from '../services/auth';
 
-const router = useRouter();
-const user = ref<UserResponse | null>(null);
+  const user = ref<UserResponse | null>(null);
 
-onMounted(async () => {
-  user.value = await me();
-});
-
-async function handleLogout() {
-  await logout();
-  router.push('/login');
-}
+  onMounted(async () => {
+    user.value = await me();
+  });
 </script>
 
 <template>
-  <div class="dashboard">
-    <header>
+  <div class="page">
+    <header class="page-header">
       <h1>Paragon Playground</h1>
-      <button class="logout" @click="handleLogout">Sign out</button>
     </header>
 
     <main v-if="user">
-      <section class="card">
+      <section class="section">
         <h2>Welcome, {{ user.displayName }}</h2>
         <dl>
           <dt>Email</dt>
           <dd>{{ user.email }}</dd>
           <dt>Organization</dt>
           <dd>{{ user.organizationName }} ({{ user.organizationSlug }})</dd>
+          <dt>Role</dt>
+          <dd>{{ user.role }}</dd>
         </dl>
       </section>
 
-      <section class="card">
-        <h2>Next Steps</h2>
-        <p>This harness is for Paragon integration exploration.</p>
+      <section class="section">
+        <h2>Examples</h2>
+        <div class="actions">
+          <router-link
+            to="/files"
+            class="action-card"
+          >
+            <h3>File Explorer</h3>
+            <p>Browse, upload, and manage files</p>
+          </router-link>
+        </div>
       </section>
     </main>
   </div>
 </template>
 
 <style scoped>
-.dashboard {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 1rem;
-}
+  .actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
 
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
+  .action-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 1rem 1.125rem;
+    transition:
+      border-color 0.12s,
+      background-color 0.12s;
+  }
 
-header h1 {
-  font-size: 1.25rem;
-}
+  .action-card:hover {
+    border-color: var(--color-accent);
+    background: var(--color-surface-subtle);
+  }
 
-.logout {
-  padding: 0.5rem 1rem;
-  background: none;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  cursor: pointer;
-}
+  .action-card h3 {
+    margin: 0 0 0.25rem;
+  }
 
-.card {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 1rem;
-}
+  .action-card p {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
 
-.card h2 {
-  margin: 0 0 1rem;
-  font-size: 1.1rem;
-}
+  dl dt {
+    font-weight: 600;
+    margin-top: 0.5rem;
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
 
-dl dt {
-  font-weight: 600;
-  margin-top: 0.5rem;
-  color: #555;
-}
-
-dl dd {
-  margin: 0 0 0.5rem;
-}
-
-code {
-  background: #f0f0f0;
-  padding: 0.1rem 0.3rem;
-  border-radius: 3px;
-  font-size: 0.9rem;
-}
-
-ul {
-  padding-left: 1.25rem;
-}
-
-li {
-  margin-bottom: 0.5rem;
-}
+  dl dd {
+    margin: 0 0 0.5rem;
+    font-size: var(--text-sm);
+  }
 </style>

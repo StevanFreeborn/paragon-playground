@@ -11,7 +11,7 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   };
 
   const xsrf = getXsrfToken();
-  
+
   if (xsrf) {
     headers['X-XSRF-Token'] = xsrf;
   }
@@ -23,13 +23,13 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   });
 
   if (!res.ok) {
-    const body = await res.json().catch(() => ({ error: res.statusText }));
-    throw new Error(body.error ?? `HTTP ${res.status}`);
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.detail ?? body.title ?? res.statusText);
   }
 
   if (res.status === 204) {
     return undefined as T;
   }
-  
+
   return res.json();
 }

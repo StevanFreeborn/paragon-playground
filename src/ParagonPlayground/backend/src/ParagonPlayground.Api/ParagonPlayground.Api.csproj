@@ -2,6 +2,8 @@
 
   <ItemGroup>
     <PackageReference Include="MongoDB.Driver" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+    <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
   </ItemGroup>
 
   <ItemGroup>

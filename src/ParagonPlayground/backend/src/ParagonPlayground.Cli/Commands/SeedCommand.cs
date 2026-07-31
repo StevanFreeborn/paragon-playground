@@ -41,11 +41,11 @@ internal class SeedCommand(
 
     var users = new[]
     {
-      (Email: "alice@acme.com", Name: "Alice", Password: "password123"),
-      (Email: "bob@acme.com", Name: "Bob", Password: "password123"),
+      (Email: "alice@acme.com", Name: "Alice", Password: "password123", Role: "admin"),
+      (Email: "bob@acme.com", Name: "Bob", Password: "password123", Role: "member"),
     };
 
-    foreach (var (email, name, password) in users)
+    foreach (var (email, name, password, role) in users)
     {
       var existing = await userRepo.GetByEmailAsync(email, cancellationToken);
 
@@ -58,6 +58,7 @@ internal class SeedCommand(
           DisplayName = name,
           PasswordHash = passwordService.Hash(password),
           OrganizationId = org.Id,
+          Role = role,
           CreatedAt = DateTime.UtcNow,
         };
 
@@ -67,7 +68,16 @@ internal class SeedCommand(
       }
       else
       {
-        AnsiConsole.MarkupLine($"[yellow]User '{email}' already exists[/]");
+        if (existing.Role != role)
+        {
+          existing.Role = role;
+          await userRepo.ReplaceAsync(existing, cancellationToken);
+          AnsiConsole.MarkupLine($"[yellow]User '{email}' role updated to '{role}'[/]");
+        }
+        else
+        {
+          AnsiConsole.MarkupLine($"[yellow]User '{email}' already exists[/]");
+        }
       }
     }
 

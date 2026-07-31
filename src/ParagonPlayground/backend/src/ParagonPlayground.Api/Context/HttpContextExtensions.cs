@@ -29,9 +29,16 @@ internal static class HttpContextExtensions
     context.Items[ContextKeys.User] = user;
   }
 
-  internal static User? GetUser(this HttpContext context)
+  internal static User GetUser(this HttpContext context)
   {
-    return context.Items[ContextKeys.User] as User;
+    return context.Items[ContextKeys.User] as User
+      ?? throw new NotAuthenticatedException("The authenticated user is not available for this request.");
+  }
+
+  internal static bool TryGetUser(this HttpContext context, out User? user)
+  {
+    user = context.Items[ContextKeys.User] as User;
+    return user is not null;
   }
 
   internal static void SetOrganization(this HttpContext context, Organization? org)
@@ -39,8 +46,15 @@ internal static class HttpContextExtensions
     context.Items[ContextKeys.Organization] = org;
   }
 
-  internal static Organization? GetOrganization(this HttpContext context)
+  internal static Organization GetOrganization(this HttpContext context)
   {
-    return context.Items[ContextKeys.Organization] as Organization;
+    return context.Items[ContextKeys.Organization] as Organization
+      ?? throw new NotAuthenticatedException("The authenticated organization is not available for this request.");
+  }
+
+  internal static bool TryGetOrganization(this HttpContext context, out Organization? organization)
+  {
+    organization = context.Items[ContextKeys.Organization] as Organization;
+    return organization is not null;
   }
 }

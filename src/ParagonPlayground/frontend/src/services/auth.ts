@@ -4,6 +4,7 @@ export interface UserResponse {
   id: string;
   email: string;
   displayName: string;
+  role: string;
   organizationId: string;
   organizationName: string;
   organizationSlug: string;

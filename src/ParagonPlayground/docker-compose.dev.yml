@@ -15,8 +15,11 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      target: development
     ports:
       - "5000:8080"
+    volumes:
+      - ./backend:/src
     environment:
       - MongoDb__ConnectionString=mongodb://mongodb:27017
       - MongoDb__DatabaseName=paragon_playground

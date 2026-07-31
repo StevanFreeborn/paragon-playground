@@ -18,6 +18,9 @@ public class User
   /// <summary>Identifier of the organization this user belongs to.</summary>
   public string OrganizationId { get; set; } = string.Empty;
 
+  /// <summary>Role within the organization: "admin" or "member".</summary>
+  public string Role { get; set; } = "member";
+
   /// <summary>Timestamp when the user was created.</summary>
   public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

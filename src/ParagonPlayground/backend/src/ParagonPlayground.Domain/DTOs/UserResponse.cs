@@ -20,4 +20,7 @@ public class UserResponse
 
   /// <summary>URL-friendly slug of the user's organization.</summary>
   public string OrganizationSlug { get; set; } = string.Empty;
+
+  /// <summary>User's role within the organization ("admin" or "member").</summary>
+  public string Role { get; set; } = "member";
 }

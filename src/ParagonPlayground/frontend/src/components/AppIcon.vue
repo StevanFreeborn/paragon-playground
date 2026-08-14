@@ -1,5 +1,6 @@
 <script setup lang="ts">
-  type IconName = 'folder' | 'file' | 'upload' | 'download' | 'external' | 'trash' | 'x' | 'plus';
+  type IconName =
+    'folder' | 'file' | 'upload' | 'download' | 'external' | 'trash' | 'x' | 'plus' | 'sharepoint';
 
   const props = withDefaults(defineProps<{ name: IconName; size?: number }>(), {
     size: 16,
@@ -24,6 +25,11 @@
     ],
     x: ['M18 6 6 18', 'm6 6 12 12'],
     plus: ['M5 12h14', 'M12 5v14'],
+    sharepoint: [
+      'M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242',
+      'M12 12v6',
+      'm-2.5-2.5 2.5 2.5 2.5-2.5',
+    ],
   };
 </script>
 

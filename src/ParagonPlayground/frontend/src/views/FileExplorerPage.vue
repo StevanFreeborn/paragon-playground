@@ -9,8 +9,44 @@
     deleteItem,
     getDownloadUrls,
     type StorageItem,
+    createSyncedFolder,
   } from '../services/storage';
   import { formatLocaleDate } from '../utils/utils';
+  import { getParagonToken } from '../services/integration';
+
+  type SharePointIds = {
+    listId: string;
+    webId: string;
+    siteId: string;
+    listItemId: string;
+    listItemUniqueId: string;
+  };
+
+  type ParentReference = {
+    driveId: string;
+    sharepointIds: SharePointIds;
+  };
+
+  type SelectedFilePickerItem = {
+    id: string;
+    parentReference: ParentReference;
+    sharepointIds: SharePointIds;
+  };
+
+  type ParagonPickerInstance = {
+    init: () => Promise<void>;
+    open: () => void;
+  };
+
+  type ParagonSDKWithPicker = {
+    authenticate: (projectId: string, jwt: string) => Promise<void>;
+    ExternalFilePicker: new (
+      integration: string,
+      options: {
+        onFileSelect: (items: SelectedFilePickerItem[]) => Promise<void> | void;
+      },
+    ) => ParagonPickerInstance;
+  };
 
   const route = useRoute();
   const router = useRouter();
@@ -18,13 +54,14 @@
   const items = ref<StorageItem[]>([]);
   const loading = ref(true);
   const error = ref('');
-  const currentFolderId = ref<string | null>(null);
   const breadcrumbs = ref<{ id: string | null; name: string }[]>([]);
   const showNewFolder = ref(false);
   const newFolderName = ref('');
+  const currentFolder = ref<StorageItem | null>(null);
 
   const folders = computed(() => items.value.filter((i) => i.isFolder));
   const files = computed(() => items.value.filter((i) => !i.isFolder));
+  const isCurrentFolderReadOnly = computed(() => currentFolder.value?.isReadOnly ?? false);
 
   const pathSegments = computed(() => {
     const raw = route.params.pathMatch;
@@ -51,6 +88,7 @@
     try {
       let parentId: string | null = null;
       const crumbs: { id: string | null; name: string }[] = [];
+      let resolvedFolder: StorageItem | null = null;
 
       for (const name of segments) {
         const children = await getItems(parentId);
@@ -64,15 +102,17 @@
 
         crumbs.push({ id: folder.id, name: folder.name });
         parentId = folder.id;
+        resolvedFolder = folder;
       }
 
-      currentFolderId.value = parentId;
+      currentFolder.value = resolvedFolder;
       breadcrumbs.value = crumbs;
 
-      items.value = await getItems(currentFolderId.value);
+      items.value = await getItems(currentFolder.value?.id ?? null);
     } catch (e: unknown) {
       error.value = e instanceof Error ? e.message : 'Failed to navigate';
       items.value = [];
+      currentFolder.value = null;
     } finally {
       loading.value = false;
     }
@@ -94,7 +134,7 @@
     try {
       await createFolder({
         name: newFolderName.value.trim(),
-        parentId: currentFolderId.value,
+        parentId: currentFolder.value?.id ?? null,
       });
 
       newFolderName.value = '';
@@ -115,7 +155,7 @@
     }
 
     try {
-      await uploadFile(file, currentFolderId.value);
+      await uploadFile(file, currentFolder.value?.id ?? null);
 
       input.value = '';
 
@@ -167,6 +207,39 @@
     if (bytes < 1048576) return `${(bytes / 1024).toFixed(1)} KB`;
     return `${(bytes / 1048576).toFixed(1)} MB`;
   }
+
+  async function openSharePointFolderPicker() {
+    try {
+      const tokenResponse = await getParagonToken();
+      const { paragon } = await import('@useparagon/connect');
+      const sdk = paragon as unknown as ParagonSDKWithPicker;
+
+      await sdk.authenticate(tokenResponse.projectId, tokenResponse.paragonJwt);
+
+      const picker = new sdk.ExternalFilePicker('sharepoint', {
+        onFileSelect: async (selectedItems: SelectedFilePickerItem[]) => {
+          if (!selectedItems || selectedItems.length === 0) return;
+
+          const selectedItem = selectedItems[0];
+          const folderId = selectedItem.id;
+          const siteId = selectedItem.sharepointIds.siteId;
+
+          await createSyncedFolder({
+            sharePointFolderId: folderId,
+            sharePointSiteId: siteId,
+            parentId: currentFolder.value?.id ?? null,
+          });
+
+          await navigateToPath(pathSegments.value);
+        },
+      });
+
+      await picker.init();
+      picker.open();
+    } catch (e: unknown) {
+      error.value = e instanceof Error ? e.message : 'Failed to open SharePoint picker';
+    }
+  }
 </script>
 
 <template>
@@ -185,7 +258,7 @@
     <nav class="breadcrumbs">
       <button
         class="crumb"
-        :class="{ active: currentFolderId === null }"
+        :class="{ active: currentFolder === null }"
         @click="navigateToBreadcrumb(0)"
       >
         Root
@@ -208,6 +281,7 @@
     <div class="toolbar">
       <button
         class="btn"
+        :disabled="isCurrentFolderReadOnly"
         @click="showNewFolder = !showNewFolder"
       >
         <AppIcon
@@ -218,7 +292,10 @@
         {{ showNewFolder ? 'Cancel' : 'New Folder' }}
       </button>
 
-      <label class="btn btn-primary upload-label">
+      <label
+        class="btn btn-primary upload-label"
+        :class="{ disabled: isCurrentFolderReadOnly }"
+      >
         <AppIcon
           name="upload"
           :size="14"
@@ -227,9 +304,21 @@
         <input
           type="file"
           hidden
+          :disabled="isCurrentFolderReadOnly"
           @change="handleUpload"
         />
       </label>
+
+      <button
+        class="btn btn-secondary"
+        @click="openSharePointFolderPicker"
+      >
+        <AppIcon
+          name="sharepoint"
+          :size="14"
+        />
+        Sync Folder from SharePoint
+      </button>
     </div>
 
     <div
@@ -289,6 +378,7 @@
         <span class="item-date">{{ formatLocaleDate(folder.createdAt) }}</span>
         <span class="item-actions">
           <button
+            v-if="!folder.isReadOnly || folder.isManagedSync"
             class="btn-small btn-small-danger"
             title="Delete"
             @click="handleDelete(folder.id)"
@@ -337,6 +427,7 @@
             />
           </button>
           <button
+            v-if="!file.isReadOnly"
             class="btn-small btn-small-danger"
             title="Delete"
             @click="handleDelete(file.id)"

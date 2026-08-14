@@ -1,11 +1,11 @@
 import { api } from './api';
 
-export interface ParagonTokenResponse {
+export type ParagonTokenResponse = {
   paragonJwt: string;
   projectId: string;
 }
 
-export interface IntegrationConfig {
+export type IntegrationConfig = {
   id: string;
   organizationId: string;
   connectionMode: string;
@@ -15,20 +15,20 @@ export interface IntegrationConfig {
   updatedAt: string;
 }
 
-export interface IntegrationConfigRequest {
+export type IntegrationConfigRequest = {
   connectionMode: string;
   sharePointSiteUrl: string | null;
   sharePointFolderPath: string | null;
 }
 
-export interface CredentialResponse {
+export type CredentialResponse = {
   id: string;
   credentialId: string;
   integrationType: string;
   connectedAt: string;
 }
 
-export interface CredentialRequest {
+export type CredentialRequest = {
   credentialId: string;
   integrationType: string;
 }

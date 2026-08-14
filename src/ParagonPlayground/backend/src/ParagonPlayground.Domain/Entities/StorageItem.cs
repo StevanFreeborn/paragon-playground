@@ -24,6 +24,7 @@ public class StorageItem
   /// <summary>File size in bytes (0 for folders).</summary>
   public long FileSize { get; set; }
 
+
   /// <summary>SharePoint site ID where the file was uploaded (null for folders).</summary>
   public string? SharePointSiteId { get; set; }
 
@@ -32,6 +33,23 @@ public class StorageItem
 
   /// <summary>SharePoint web URL for direct access (null for folders).</summary>
   public string? SharePointWebUrl { get; set; }
+
+
+  /// <summary>Indicates whether the storage item is associated with a managed sync</summary>
+  public bool IsManagedSync { get; set; }
+
+  /// <summary>Identifies the managed sync this storage item is attached to.</summary>
+  public string ManagedSyncId { get; set; } = string.Empty;
+
+  /// <summary>Paragon Sync record ID (sync-generated UUID) for items ingested from managed sync.</summary>
+  public string ParagonRecordId { get; set; } = string.Empty;
+
+  /// <summary>Identifies the sharepoint folder id that the managed sync is attached to.</summary>
+  public string SharePointFolderId { get; set; } = string.Empty;
+
+  /// <summary>Indicates whether the storage item can be edited or modified by our application.</summary>
+  public bool IsReadOnly { get; set; }
+
 
   /// <summary>User who created this item.</summary>
   public string CreatedByUserId { get; set; } = string.Empty;

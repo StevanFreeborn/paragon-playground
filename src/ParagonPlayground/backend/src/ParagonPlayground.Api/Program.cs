@@ -28,7 +28,7 @@ builder.Services.AddSingleton<SessionRepository>();
 builder.Services.AddSingleton<StorageItemRepository>();
 builder.Services.AddSingleton<UserCredentialRepository>();
 builder.Services.AddSingleton<OrganizationIntegrationRepository>();
-builder.Services.AddSingleton<ParagonService>();
+builder.Services.AddSingleton<SyncHierarchyIngestor>();
 
 builder.Services.Configure<ParagonOptions>(builder.Configuration.GetSection(ParagonOptions.SectionName));
 

@@ -16,7 +16,7 @@ internal static class ParagonEndpoints
 
   private static async Task<IResult> GenerateToken(
     HttpContext context,
-    ParagonService paragon,
+    ParagonApiClient paragon,
     UserCredentialRepository credRepo,
     CancellationToken ct
   )

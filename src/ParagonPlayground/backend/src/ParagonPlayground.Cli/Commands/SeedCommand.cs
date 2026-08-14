@@ -12,9 +12,12 @@ namespace ParagonPlayground.Cli.Commands;
 internal class SeedCommand(
   OrganizationRepository orgRepo,
   UserRepository userRepo,
-  PasswordService passwordService) : AsyncCommand<SeedCommand.Settings>
+  PasswordService passwordService
+) : AsyncCommand<SeedCommand.Settings>
 {
-  internal class Settings : CommandSettings { }
+  internal class Settings : CommandSettings
+  {
+  }
 
   protected override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
   {

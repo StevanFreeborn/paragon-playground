@@ -17,8 +17,6 @@ A application harness to explore using Paragon for integrations.
 .\scripts\setup-certs.ps1
 ```
 
-> **Run this from an elevated (Admin) PowerShell prompt.** `mkcert` needs admin rights to install the CA into the JDK system trust store. Without elevation the OS and browsers still trust the cert, but Java tools will reject it.
-
 This uses [mkcert](https://github.com/FiloSottile/mkcert) (installed automatically if missing). No hosts file entries needed — `*.paragonplayground.localhost` resolves to 127.0.0.1 natively.
 
 ### 2. Start infrastructure

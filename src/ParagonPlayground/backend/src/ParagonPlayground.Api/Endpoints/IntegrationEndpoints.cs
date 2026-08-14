@@ -56,7 +56,7 @@ internal static class IntegrationEndpoints
     HttpContext context,
     OrganizationIntegrationRepository repo,
     UserCredentialRepository credRepo,
-    ParagonService paragon,
+    ParagonApiClient paragon,
     CancellationToken ct
   )
   {

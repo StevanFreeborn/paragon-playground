@@ -1,6 +1,6 @@
 import { api } from './api';
 
-export interface StorageItem {
+export type StorageItem = {
   id: string;
   name: string;
   isFolder: boolean;
@@ -11,16 +11,33 @@ export interface StorageItem {
   createdByUserId: string;
   createdByDisplayName: string;
   createdAt: string;
+  isReadOnly: boolean;
+  isManagedSync: boolean;
 }
 
-export interface CreateFolderRequest {
+export type CreateFolderRequest = {
   name: string;
   parentId: string | null;
 }
 
-export interface DownloadResponse {
+export type DownloadResponse = {
   sharePointUrl: string | null;
   proxyUrl: string | null;
+}
+
+export type CreateSyncedFolderRequest = {
+  sharePointFolderId: string;
+  sharePointSiteId: string;
+  parentId?: string | null;
+  credentialId?: string;
+}
+
+export async function createSyncedFolder(req: CreateSyncedFolderRequest): Promise<StorageItem> {
+  return api<StorageItem>('/storage/synced-folders', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(req),
+  });
 }
 
 export async function getItems(parentId?: string | null): Promise<StorageItem[]> {
